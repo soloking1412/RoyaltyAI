@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoyaltyAI | Bags Web3 Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="glass-panel main-header">
+            <div class="logo">
+                <img src="/logo.png" alt="RoyaltyAI Logo" class="logo-img" />
+                <h1>Royalty<span>AI</span></h1>
+            </div>
+            <p class="subtitle">Next-gen Creator Royalty Management on Bags</p>
+        </header>
+
+        <main class="dashboard-grid">
+            <!-- Column 1: Insights & Data -->
+            <div class="dashboard-col">
+                <section class="glass-card">
+                    <div class="card-header">
+                        <h2>1. Royalty Insights</h2>
+                        <div class="pulse-indicator"></div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label for="tokenSelect">Token Feed</label>
+                            <select id="tokenSelect" class="input-modern" onchange="selectTokenFromDropdown()">
+                                <option value="">Select a token...</option>
+                            </select>
+                            <button class="btn-primary" onclick="loadTokenFeed()">Refresh Feed</button>
+                        </div>
+
+                        <div class="divider"><span>OR</span></div>
+
+                        <div class="form-group">
+                            <label for="tokenMint">Token Mint (Public Key)</label>
+                            <div class="input-with-btn">
+                                <input type="text" id="tokenMint" class="input-modern" placeholder="e.g. 8y... (token mint)" />
+                                <button class="btn-accent" onclick="runInsights()">Fetch Insights</button>
+                            </div>
+                        </div>
+
+                        <div class="outputs mt-4">
+                            <div class="output-box w-full" id="insightsOut">System Ready. Awaiting token intel.</div>
+                            
+                            <div class="grid-2col mt-3">
+                                <div class="output-box" id="leaderboardOut">Leaderboard: Standby.</div>
+                                <div class="output-box" id="velocityOut">Claim Velocity: Standby.</div>
+                            </div>
+                            
+                            <div class="output-box w-full mt-3 highlight-box" id="recommendationsOut">Recommendations: Standby.</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Column 2: Buyback & Payload -->
+            <div class="dashboard-col">
+                <section class="glass-card mb-4">
+                    <div class="card-header">
+                        <h2>2. AI Buyback Plan</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="grid-2col">
+                            <div class="form-group">
+                                <label for="inputMint" title="Treasury asset">Input Mint <span class="badge">wSOL</span></label>
+                                <input type="text" id="inputMint" class="input-modern" value="So11111111111111111111111111111111111111112" />
+                            </div>
+                            <div class="form-group">
+                                <label for="slippageBps">Slippage (Bps)</label>
+                                <input type="number" id="slippageBps" class="input-modern" value="300" />
+                                <small class="note">300 = 3%</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label for="actionText">AI Action Prompt</label>
+                            <textarea id="actionText" class="input-modern textarea-modern">Use 20% of my royalties this week to buy back and burn my token.</textarea>
+                        </div>
+
+                        <button class="btn-primary w-full mt-3 glow-on-hover" onclick="runPlan()">Generate AI Plan (Quote)</button>
+                        
+                        <div class="output-box w-full mt-3" id="planOut">Plan output will appear here.</div>
+                    </div>
+                </section>
+
+                <section class="glass-card">
+                    <div class="card-header">
+                        <h2>3. Execution Engine</h2>
+                    </div>
+                    <div class="card-body">
+                        <p class="section-desc">Agent Auth & Transaction Payload Builders</p>
+                        
+                        <div class="tabs">
+                            <!-- Auth sub-section -->
+                            <div class="agent-panel">
+                                <h3>Agent Login</h3>
+                                <div class="grid-2col mb-3">
+                                    <div class="form-group">
+                                        <label for="agentUsername">Username</label>
+                                        <div class="input-with-btn">
+                                            <input type="text" id="agentUsername" class="input-modern" placeholder="moltbook user" />
+                                            <button class="btn-secondary" onclick="agentAuthInit()">Init</button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="agentPostId">Post ID Verification</label>
+                                        <div class="input-with-btn">
+                                            <input type="text" id="agentPostId" class="input-modern" placeholder="post_123" />
+                                            <button class="btn-secondary" onclick="agentAuthLogin()">Verify</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="output-box small-out" id="agentInitOut">Agent auth status...</div>
+                            </div>
+
+                            <!-- Wallets & Payloads -->
+                            <div class="payload-panel mt-4">
+                                <div class="grid-2col">
+                                    <div class="form-group">
+                                        <label for="agentToken">Agent JWT Token</label>
+                                        <input type="text" id="agentToken" class="input-modern" placeholder="JWT..." readonly />
+                                        <button class="btn-secondary w-full mt-2" onclick="loadAgentWallets()">Load Wallets</button>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Wallet Selector</label>
+                                        <div class="wallet-list" id="agentWallets">
+                                            No wallets loaded.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="action-grid mt-4">
+                                    <button class="btn-primary" onclick="buildBulkClaimTxs()">Bulk Claim Txs (V3)</button>
+                                    <div class="output-box" id="payloadBulkOut">Bulk payload preview.</div>
+                                </div>
+
+                                <div class="divider mt-4 mb-3"><span>Single Txs</span></div>
+
+                                <div class="form-group">
+                                    <label for="feeClaimer">Fee Claimer Wallet</label>
+                                    <input type="text" id="feeClaimer" class="input-modern" placeholder="Public key..." />
+                                </div>
+                                <div class="form-group mt-3">
+                                    <label for="quoteResponse">Quote Data Payload</label>
+                                    <input type="text" id="quoteResponse" class="input-modern" placeholder="{ ... }" />
+                                </div>
+
+                                <div class="grid-2col mt-3">
+                                    <button class="btn-accent" onclick="buildClaimTxs()">Build Claim Tx</button>
+                                    <button class="btn-accent" onclick="buildSwapTx()">Create Swap Tx</button>
+                                </div>
+                                
+                                <div class="output-box wide mt-3" id="payloadOut">Transaction payload preview.</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>
