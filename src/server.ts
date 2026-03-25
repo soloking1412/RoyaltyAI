@@ -343,8 +343,12 @@ app.post("/api/token/claim-txs/v3/bulk", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log(`RoyaltyAI server running on http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== "production" && process.env.VERCEL !== "1") {
+  app.listen(PORT, () => {
+    // eslint-disable-next-line no-console
+    console.log(`RoyaltyAI server running on http://localhost:${PORT}`);
+  });
+}
+
+export default app;
 
