@@ -2,6 +2,11 @@ import "dotenv/config";
 
 import express from "express";
 import { z } from "zod";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 import {
   createSwapTransaction,
@@ -52,7 +57,11 @@ const CACHE_TTL_MS = Number(process.env.CACHE_TTL_MS ?? 30_000);
 let tokenFeedCache: { value: unknown; expiresAtMs: number } | null = null;
 const insightsCache = new Map<string, { value: unknown; expiresAtMs: number }>();
 
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "../public")));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/index.html"));
+});
 
 app.get("/api/royalty/insights", async (req, res) => {
   const q = tokenMintQuerySchema.safeParse(req.query);
